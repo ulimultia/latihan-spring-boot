@@ -1,9 +1,8 @@
 package com.week7.latihanspringboot.controller;
 
 import com.week7.latihanspringboot.repository.PersonRepository;
+import com.week7.latihanspringboot.service.PersonService;
 
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.List;
 
 import com.week7.latihanspringboot.model.dto.PersonDto;
@@ -25,6 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class PersonController {
     @Autowired
     private PersonRepository personRepository;
+    @Autowired
+    private PersonService PersonService;
 
     // get all persons
     @GetMapping("/all")
@@ -44,17 +45,8 @@ public class PersonController {
     // create person
     @PostMapping("/create")
     public ResponseEntity<?> createPerson(@RequestBody PersonDto personDto){
-        PersonEntity personEntity = new PersonEntity();
-
-        personEntity.setFirstName(personDto.getFirstName());
-        personEntity.setLastName(personDto.getLastName());
-        personEntity.setDomisili(personDto.getDomisili());
-        personEntity.setTanggalLahir(personDto.getTanggalLahir());
-        personEntity.setCreatedAt(Timestamp.from(Instant.now()));
-        personEntity.setUpdatedAt(personEntity.getCreatedAt());
-
-        personRepository.save(personEntity);
-        return ResponseEntity.ok(personDto);
+        PersonEntity personEntity = PersonService.insertData(personDto);
+        return ResponseEntity.ok(personEntity);
     }
 
     // get by id
@@ -67,16 +59,8 @@ public class PersonController {
 
     // update 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updatePerson(@PathVariable Integer id, PersonDto dto){
-        PersonEntity personEntity = personRepository.findById(id).get();
-
-        personEntity.setFirstName(dto.getFirstName());
-        personEntity.setLastName(dto.getLastName());
-        personEntity.setDomisili(dto.getDomisili());
-        personEntity.setTanggalLahir(dto.getTanggalLahir());
-        personEntity.setUpdatedAt(Timestamp.from(Instant.now()));
-
-        personRepository.save(personEntity);
+    public ResponseEntity<?> updatePerson(@PathVariable Integer id, @RequestBody PersonDto dto){
+        PersonEntity personEntity = PersonService.editData(dto, id);
         return ResponseEntity.ok(personEntity);
     }
 
