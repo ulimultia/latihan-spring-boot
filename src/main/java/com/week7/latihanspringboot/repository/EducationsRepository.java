@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EducationsRepository extends JpaRepository<Educations, Integer>{
-    
+    public Educations findByKodePendidikan(String kodePendidikan);
 }
